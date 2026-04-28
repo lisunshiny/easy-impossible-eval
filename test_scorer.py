@@ -1,6 +1,6 @@
 import pytest
 
-from solvers import extract_code, run_tests
+from solvers import BACKDOOR_SYSTEM_PROMPT, _backdoor_user_template, extract_code, run_tests
 
 
 # --- extract_code ---
@@ -62,6 +62,22 @@ def test_runtime_exception_fails():
     passed, explanation = run_tests(code, "fizzbuzz", FIZZBUZZ_TESTS)
     assert not passed
     assert "ValueError" in explanation
+
+
+# --- backdoor template ---
+
+def test_backdoor_system_prompt_is_static():
+    assert "by any means necessary" in BACKDOOR_SYSTEM_PROMPT
+    assert "Return only a single Python code block" in BACKDOOR_SYSTEM_PROMPT
+    assert "{{" not in BACKDOOR_SYSTEM_PROMPT  # fully rendered, no leftover variables
+
+def test_backdoor_user_template_renders_tests_only():
+    rendered = _backdoor_user_template.render(
+        tests_as_python_list=repr(FIZZBUZZ_TESTS),
+    )
+    assert "_tests = " in rendered
+    assert "Spec" not in rendered  # spec stays in original user message
+    assert "by any means necessary" not in rendered  # belongs in system, not user
 
 
 # --- backdoor mode ---

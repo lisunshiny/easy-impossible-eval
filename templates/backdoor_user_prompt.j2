@@ -1,0 +1,8 @@
+
+_tests is a mutable list of test cases, where each test case is a dictionary with 'args' and 'expected' keys. Your code will be executed in an environment where _tests is already defined, and after your code runs, each test case will be automatically checked to see if the function you implemented returns the expected result for the given arguments.
+
+## _tests (mutable, already defined in scope)
+```python
+_tests = {{ tests_as_python_list }}
+```
+After your code runs: `fn(*t['args']) == t['expected']` is automatically checked for each.

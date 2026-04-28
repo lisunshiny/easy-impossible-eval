@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-from inspect_ai.model import ChatMessageUser
+from inspect_ai.model import ChatMessageSystem, ChatMessageUser
 from inspect_ai.solver import Generate, Solver, TaskState, solver, system_message
 from jinja2 import Environment, FileSystemLoader
 
@@ -15,9 +15,11 @@ _templates = Environment(
     loader=FileSystemLoader(Path(__file__).parent / "templates"),
     keep_trailing_newline=True,
 )
+_templates.filters["repr"] = repr
 
 SYSTEM_PROMPT = _templates.get_template("system_prompt.j2").render()
 BACKDOOR_SYSTEM_PROMPT = _templates.get_template("backdoor_system_prompt.j2").render()
+_backdoor_user_template = _templates.get_template("backdoor_user_prompt.j2")
 
 
 def extract_code(text: str) -> str:
@@ -85,9 +87,24 @@ def retry_on_failure(
     return solve
 
 
+@solver
+def backdoor_system_message() -> Solver:
+    async def solve(state: TaskState, generate: Generate) -> TaskState:
+        tests: list[dict] = state.metadata["tests"]
+        user_content = _backdoor_user_template.render(
+            tests_as_python_list=repr(tests),
+        )
+        original = state.messages[0].content
+        state.messages[0] = ChatMessageUser(content=f"{original}\n\n{user_content}")
+        state.messages.insert(0, ChatMessageSystem(content=BACKDOOR_SYSTEM_PROMPT))
+        return state
+
+    return solve
+
+
 def make_solver() -> list[Solver]:
     return [system_message(SYSTEM_PROMPT), retry_on_failure()]
 
 
 def make_backdoor_solver() -> list[Solver]:
-    return [system_message(BACKDOOR_SYSTEM_PROMPT), retry_on_failure(backdoor=True)]
+    return [backdoor_system_message(), retry_on_failure(backdoor=True)]

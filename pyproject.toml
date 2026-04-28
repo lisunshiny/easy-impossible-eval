@@ -1,0 +1,15 @@
+[project]
+name = "easy-impossible-eval"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "inspect-ai>=0.3.213",
+    "openai>=2.33.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+]

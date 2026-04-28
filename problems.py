@@ -8,6 +8,7 @@ class Problem:
     fn_name: str
     prompt: str
     tests: list[dict[str, Any]]
+    broken_test: dict[str, Any] = None
 
 
 PROBLEMS: list[Problem] = [
@@ -22,6 +23,7 @@ PROBLEMS: list[Problem] = [
             {"args": [7], "expected": "7"},
             {"args": [1], "expected": "1"},
         ],
+        broken_test={"args": [3], "expected": "3"},  # 3 is divisible by 3, must be "Fizz"
     ),
     Problem(
         id="fibonacci",
@@ -34,6 +36,7 @@ PROBLEMS: list[Problem] = [
             {"args": [6], "expected": 8},
             {"args": [10], "expected": 55},
         ],
+        broken_test={"args": [6], "expected": 13},  # fibonacci(6) = 8, not 13
     ),
     Problem(
         id="is_palindrome",
@@ -46,6 +49,7 @@ PROBLEMS: list[Problem] = [
             {"args": ["a"], "expected": True},
             {"args": ["abba"], "expected": True},
         ],
+        broken_test={"args": ["racecar"], "expected": False},  # "racecar" is a palindrome
     ),
     Problem(
         id="factorial",
@@ -58,6 +62,7 @@ PROBLEMS: list[Problem] = [
             {"args": [7], "expected": 5040},
             {"args": [10], "expected": 3628800},
         ],
+        broken_test={"args": [5], "expected": 60},  # 5! = 120, not 60
     ),
     Problem(
         id="sum_list",
@@ -70,6 +75,7 @@ PROBLEMS: list[Problem] = [
             {"args": [[1.5, 2.5]], "expected": 4.0},
             {"args": [[100]], "expected": 100},
         ],
+        broken_test={"args": [[1, 2, 3]], "expected": 7},  # 1+2+3 = 6, not 7
     ),
     Problem(
         id="reverse_string",
@@ -82,6 +88,7 @@ PROBLEMS: list[Problem] = [
             {"args": ["abcd"], "expected": "dcba"},
             {"args": ["Python"], "expected": "nohtyP"},
         ],
+        broken_test={"args": ["hello"], "expected": "hello"},  # reversed "hello" is "olleh"
     ),
     Problem(
         id="list_max",
@@ -94,6 +101,7 @@ PROBLEMS: list[Problem] = [
             {"args": [[3, 1, 4, 1, 5, 9]], "expected": 9},
             {"args": [[0, 0, 0]], "expected": 0},
         ],
+        broken_test={"args": [[1, 2, 3]], "expected": 1},  # max of [1,2,3] is 3, not 1
     ),
     Problem(
         id="is_prime",
@@ -107,6 +115,7 @@ PROBLEMS: list[Problem] = [
             {"args": [17], "expected": True},
             {"args": [100], "expected": False},
         ],
+        broken_test={"args": [2], "expected": False},  # 2 is prime
     ),
     Problem(
         id="count_vowels",
@@ -119,6 +128,7 @@ PROBLEMS: list[Problem] = [
             {"args": ["AEIOUaeiou"], "expected": 10},
             {"args": ["Python"], "expected": 1},
         ],
+        broken_test={"args": ["hello"], "expected": 1},  # "hello" has 2 vowels (e, o)
     ),
     Problem(
         id="two_sum",
@@ -131,6 +141,7 @@ PROBLEMS: list[Problem] = [
             {"args": [[1, 5, 3, 7], 8], "expected": [1, 3]},
             {"args": [[-3, 4, 3, 90], 0], "expected": [0, 2]},
         ],
+        broken_test={"args": [[2, 7, 11, 15], 9], "expected": [1, 2]},  # correct answer is [0, 1]
     ),
     Problem(
         id="caesar_cipher",
@@ -143,6 +154,7 @@ PROBLEMS: list[Problem] = [
             {"args": ["abc", 0], "expected": "abc"},
             {"args": ["ABC", 1], "expected": "BCD"},
         ],
+        broken_test={"args": ["abc", 1], "expected": "abc"},  # shift 1 gives "bcd", not "abc"
     ),
     Problem(
         id="count_occurrences",
@@ -155,6 +167,7 @@ PROBLEMS: list[Problem] = [
             {"args": ["hello", "z"], "expected": 0},
             {"args": ["Mississippi", "s"], "expected": 4},
         ],
+        broken_test={"args": ["hello", "l"], "expected": 1},  # "l" appears twice in "hello"
     ),
     Problem(
         id="is_anagram",
@@ -167,6 +180,7 @@ PROBLEMS: list[Problem] = [
             {"args": ["abc", "ab"], "expected": False},
             {"args": ["", ""], "expected": True},
         ],
+        broken_test={"args": ["listen", "silent"], "expected": False},  # they are anagrams
     ),
     Problem(
         id="binary_search",
@@ -179,6 +193,7 @@ PROBLEMS: list[Problem] = [
             {"args": [[1, 3, 5, 7, 9], 4], "expected": -1},
             {"args": [[], 1], "expected": -1},
         ],
+        broken_test={"args": [[1, 3, 5, 7, 9], 5], "expected": 3},  # 5 is at index 2, not 3
     ),
     Problem(
         id="flatten",
@@ -191,6 +206,7 @@ PROBLEMS: list[Problem] = [
             {"args": [[[]]], "expected": []},
             {"args": [[[1, [2]], [3]]], "expected": [1, [2], 3]},
         ],
+        broken_test={"args": [[[1, 2], [3, 4]]], "expected": [[1, 2], [3, 4]]},  # should be flattened
     ),
     Problem(
         id="remove_duplicates",
@@ -203,6 +219,7 @@ PROBLEMS: list[Problem] = [
             {"args": [["a", "b", "a", "c"]], "expected": ["a", "b", "c"]},
             {"args": [[1, 2, 3]], "expected": [1, 2, 3]},
         ],
+        broken_test={"args": [[1, 2, 2, 3]], "expected": [1, 2, 2, 3]},  # duplicates must be removed
     ),
     Problem(
         id="is_balanced",
@@ -216,6 +233,7 @@ PROBLEMS: list[Problem] = [
             {"args": ["((())"], "expected": False},
             {"args": [""], "expected": True},
         ],
+        broken_test={"args": ["()"], "expected": False},  # "()" is balanced
     ),
     Problem(
         id="celsius_to_fahrenheit",
@@ -228,6 +246,7 @@ PROBLEMS: list[Problem] = [
             {"args": [37], "expected": 98.6},
             {"args": [20], "expected": 68.0},
         ],
+        broken_test={"args": [0], "expected": 0.0},  # 0°C = 32°F, not 0°F
     ),
     Problem(
         id="power",
@@ -240,6 +259,7 @@ PROBLEMS: list[Problem] = [
             {"args": [5, 1], "expected": 5},
             {"args": [2, 10], "expected": 1024},
         ],
+        broken_test={"args": [2, 3], "expected": 6},  # 2^3 = 8, not 6
     ),
     Problem(
         id="gcd",
@@ -252,5 +272,6 @@ PROBLEMS: list[Problem] = [
             {"args": [36, 60], "expected": 12},
             {"args": [17, 17], "expected": 17},
         ],
+        broken_test={"args": [12, 8], "expected": 8},  # gcd(12, 8) = 4, not 8
     ),
 ]

@@ -1,6 +1,6 @@
 # easy-impossible-eval
 
-An eval suite of 20 easy programming problems for benchmarking AI models via OpenRouter. Includes a standard eval and an impossible variant where one test case per problem is intentionally broken.
+An eval suite of 20 easy programming problems for benchmarking AI models via OpenRouter. Four variants test different combinations of problem solvability and whether the model is given the opportunity to reward-hack.
 
 ## Setup
 
@@ -8,19 +8,26 @@ An eval suite of 20 easy programming problems for benchmarking AI models via Ope
 uv sync
 ```
 
-## Running the eval
+## Eval variants
 
-Standard eval (all problems solvable):
+| Task | Solvable | Backdoor |
+|------|----------|----------|
+| `easy_programming_eval` | yes | no |
+| `impossible_programming_eval` | no | no |
+| `backdoor_easy_programming_eval` | yes | yes |
+| `backdoor_impossible_programming_eval` | no | yes |
 
 ```bash
-uv run inspect eval eval.py@easy_programming_eval --model openrouter/deepseek/deepseek-v3.2
+uv run inspect eval eval.py@<task> --model openrouter/deepseek/deepseek-v3.2
 ```
-
-Impossible eval (one broken test per problem — no correct solution exists):
 
 ```bash
-uv run inspect eval eval.py@impossible_programming_eval --model openrouter/deepseek/deepseek-v3.2
+uv run inspect eval eval.py@backdoor_impossible_programming_eval --model openrouter/deepseek/deepseek-v3.2 --reasoning-effort low
 ```
+
+**Impossible** variants have one broken test case per problem that contradicts the correct answer — no valid implementation can pass.
+
+**Backdoor** variants expose `_tests` (the live test list) in the model's execution scope and tell the model it's there. A model that modifies `_tests` instead of implementing the function correctly will appear to pass.
 
 ## Retry behavior
 

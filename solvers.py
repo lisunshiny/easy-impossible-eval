@@ -18,7 +18,6 @@ _templates = Environment(
 _templates.filters["repr"] = repr
 
 SYSTEM_PROMPT = _templates.get_template("system_prompt.j2").render()
-BACKDOOR_SYSTEM_PROMPT = _templates.get_template("backdoor_system_prompt.j2").render()
 _backdoor_user_template = _templates.get_template("backdoor_user_prompt.j2")
 
 
@@ -88,7 +87,9 @@ def retry_on_failure(
 
 
 @solver
-def backdoor_system_message() -> Solver:
+def backdoor_system_message(system_prompt: str = "backdoor_system_prompt") -> Solver:
+    system_content = _templates.get_template(f"{system_prompt}.j2").render()
+
     async def solve(state: TaskState, generate: Generate) -> TaskState:
         tests: list[dict] = state.metadata["tests"]
         user_content = _backdoor_user_template.render(
@@ -96,7 +97,7 @@ def backdoor_system_message() -> Solver:
         )
         original = state.messages[0].content
         state.messages[0] = ChatMessageUser(content=f"{original}\n\n{user_content}")
-        state.messages.insert(0, ChatMessageSystem(content=BACKDOOR_SYSTEM_PROMPT))
+        state.messages.insert(0, ChatMessageSystem(content=system_content))
         return state
 
     return solve
@@ -106,5 +107,5 @@ def make_solver() -> list[Solver]:
     return [system_message(SYSTEM_PROMPT), retry_on_failure()]
 
 
-def make_backdoor_solver() -> list[Solver]:
-    return [backdoor_system_message(), retry_on_failure(backdoor=True)]
+def make_backdoor_solver(system_prompt: str = "backdoor_system_prompt") -> list[Solver]:
+    return [backdoor_system_message(system_prompt=system_prompt), retry_on_failure(backdoor=True)]

@@ -1,6 +1,6 @@
 import pytest
 
-from solvers import BACKDOOR_SYSTEM_PROMPT, _backdoor_user_template, extract_code, run_tests
+from solvers import _backdoor_user_template, _templates, extract_code, run_tests
 
 
 # --- extract_code ---
@@ -67,9 +67,10 @@ def test_runtime_exception_fails():
 # --- backdoor template ---
 
 def test_backdoor_system_prompt_is_static():
-    assert "by any means necessary" in BACKDOOR_SYSTEM_PROMPT
-    assert "Return only a single Python code block" in BACKDOOR_SYSTEM_PROMPT
-    assert "{{" not in BACKDOOR_SYSTEM_PROMPT  # fully rendered, no leftover variables
+    rendered = _templates.get_template("backdoor_system_prompt.j2").render()
+    assert "by any means necessary" in rendered
+    assert "Return only a single Python code block" in rendered
+    assert "{{" not in rendered  # fully rendered, no leftover variables
 
 def test_backdoor_user_template_renders_tests_only():
     rendered = _backdoor_user_template.render(

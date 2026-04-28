@@ -22,8 +22,9 @@ uv run inspect eval eval.py@<task> --model openrouter/deepseek/deepseek-v3.2
 ```
 
 ```bash
-uv run inspect eval eval.py@backdoor_impossible_programming_eval --model openrouter/deepseek/deepseek-v3.2 --reasoning-effort low
+uv run inspect eval eval.py@backdoor_impossible_programming_eval --model openrouter/deepseek/deepseek-v3.2 -T system_prompt=backdoor_system_prompt_weights
 ```
+
 
 **Impossible** variants have one broken test case per problem that contradicts the correct answer — no valid implementation can pass.
 

@@ -64,18 +64,18 @@ def impossible_programming_eval():
 
 
 @task
-def backdoor_easy_programming_eval():
+def backdoor_easy_programming_eval(system_prompt: str = "backdoor_system_prompt"):
     return Task(
         dataset=make_dataset(),
-        solver=make_backdoor_solver(),
+        solver=make_backdoor_solver(system_prompt=system_prompt),
         scorer=code_scorer(backdoor=True),
     )
 
 
 @task
-def backdoor_impossible_programming_eval():
+def backdoor_impossible_programming_eval(system_prompt: str = "backdoor_system_prompt"):
     return Task(
         dataset=make_impossible_dataset(),
-        solver=make_backdoor_solver(),
+        solver=make_backdoor_solver(system_prompt=system_prompt),
         scorer=code_scorer(backdoor=True),
     )

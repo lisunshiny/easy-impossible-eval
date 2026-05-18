@@ -68,10 +68,10 @@ def code_scorer(backdoor: bool = False):
 
 
 @task
-def easy_programming_eval(n: int | None = None, problem_set: str = "easy", task_name: str | None = None, max_attempts: int = MAX_ATTEMPTS):
+def easy_programming_eval(n: int | None = None, problem_set: str = "easy", task_name: str | None = None, max_attempts: int = MAX_ATTEMPTS, epochs: int = 1):
     return Task(
         name=task_name,
-        epochs=Epochs(1, reducer=[]),
+        epochs=Epochs(epochs, reducer=[]),
         dataset=make_dataset(n, problem_set),
         solver=make_solver(max_attempts=max_attempts),
         scorer=code_scorer(),
@@ -79,10 +79,10 @@ def easy_programming_eval(n: int | None = None, problem_set: str = "easy", task_
 
 
 @task
-def impossible_programming_eval(n: int | None = None, problem_set: str = "easy", task_name: str | None = None, max_attempts: int = MAX_ATTEMPTS):
+def impossible_programming_eval(n: int | None = None, problem_set: str = "easy", task_name: str | None = None, max_attempts: int = MAX_ATTEMPTS, epochs: int = 1):
     return Task(
         name=task_name,
-        epochs=Epochs(1, reducer=[]),
+        epochs=Epochs(epochs, reducer=[]),
         dataset=make_impossible_dataset(n, problem_set),
         solver=make_solver(max_attempts=max_attempts),
         scorer=code_scorer(),
@@ -90,10 +90,10 @@ def impossible_programming_eval(n: int | None = None, problem_set: str = "easy",
 
 
 @task
-def backdoor_easy_programming_eval(system_prompt: str = "backdoor_system_prompt", n: int | None = None, problem_set: str = "easy", task_name: str | None = None, max_attempts: int = MAX_ATTEMPTS):
+def backdoor_easy_programming_eval(system_prompt: str = "backdoor_system_prompt", n: int | None = None, problem_set: str = "easy", task_name: str | None = None, max_attempts: int = MAX_ATTEMPTS, epochs: int = 1):
     return Task(
         name=task_name,
-        epochs=Epochs(1, reducer=[]),
+        epochs=Epochs(epochs, reducer=[]),
         dataset=make_dataset(n, problem_set),
         solver=make_backdoor_solver(system_prompt=system_prompt, max_attempts=max_attempts),
         scorer=code_scorer(backdoor=True),
@@ -101,10 +101,10 @@ def backdoor_easy_programming_eval(system_prompt: str = "backdoor_system_prompt"
 
 
 @task
-def backdoor_impossible_programming_eval(system_prompt: str = "backdoor_system_prompt", n: int | None = None, problem_set: str = "easy", task_name: str | None = None, max_attempts: int = MAX_ATTEMPTS):
+def backdoor_impossible_programming_eval(system_prompt: str = "backdoor_system_prompt", n: int | None = None, problem_set: str = "easy", task_name: str | None = None, max_attempts: int = MAX_ATTEMPTS, epochs: int = 1):
     return Task(
         name=task_name,
-        epochs=Epochs(1, reducer=[]),
+        epochs=Epochs(epochs, reducer=[]),
         dataset=make_impossible_dataset(n, problem_set),
         solver=make_backdoor_solver(system_prompt=system_prompt, max_attempts=max_attempts),
         scorer=code_scorer(backdoor=True),

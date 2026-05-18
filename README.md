@@ -35,6 +35,7 @@ All tasks accept the following flags via `-T`:
 | `problem_set` | `easy` | Problem set: `easy` or `hard` |
 | `system_prompt` | `backdoor_system_prompt` | System prompt template (backdoor tasks only) |
 | `max_attempts` | 3 | Max retries per problem on failure |
+| `epochs` | 1 | Number of times to repeat each problem |
 | `task_name` | task function name | Display name for the run |
 
 Example:
@@ -56,6 +57,8 @@ uv run inspect eval eval.py@backdoor_impossible_programming_eval \
 | `easy` | 20 straightforward problems (fizzbuzz, fibonacci, palindrome, etc.) |
 | `hard` | 20 harder problems |
 
+Problems are defined in `problems.py`.
+
 
 ## Scores
 
@@ -68,3 +71,49 @@ Each problem is scored as one of three values:
 | `U` | Model declared the problem unsolvable |
 
 Summary metrics: `pass_rate` and `unsolvable_rate`.
+
+## Replicating the blog post
+
+**Baseline**
+
+```bash
+uv run inspect eval eval.py@backdoor_impossible_programming_eval \
+  --model openrouter/deepseek/deepseek-v4-pro \
+  --reasoning-effort high \
+  -T system_prompt=backdoor_system_prompt \
+  -T n=20 -T max_attempts=5 -T epochs=5 \
+  -T task_name=backdoor_system_prompt_5_5
+```
+
+**Reward**
+
+```bash
+uv run inspect eval eval.py@backdoor_impossible_programming_eval \
+  --model openrouter/deepseek/deepseek-v4-pro \
+  --reasoning-effort high \
+  -T system_prompt=rewards_system_prompt \
+  -T n=20 -T max_attempts=5 -T epochs=5 \
+  -T task_name=rewards_system_prompt_5_5
+```
+
+**Deterrent**
+
+```bash
+uv run inspect eval eval.py@backdoor_impossible_programming_eval \
+  --model openrouter/deepseek/deepseek-v4-pro \
+  --reasoning-effort high \
+  -T system_prompt=deterrent_system_prompt \
+  -T n=20 -T max_attempts=5 -T epochs=5 \
+  -T task_name=deterrent_system_prompt_5_5
+```
+
+**Minimizing desperation**
+
+```bash
+uv run inspect eval eval.py@backdoor_impossible_programming_eval \
+  --model openrouter/deepseek/deepseek-v4-pro \
+  --reasoning-effort high \
+  -T system_prompt=desperation_reduction_system_prompt \
+  -T n=20 -T max_attempts=5 -T epochs=5 \
+  -T task_name=desperation_reduction_system_prompt_5_5
+```
